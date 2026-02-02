@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npx vite build:*)",
+      "Bash(npx vite --host)",
+      "Bash(node:*)",
+      "Bash(del \"D:\\\\projects\\\\Tutor\\\\test-validation.mjs\")",
+      "Bash(start http://localhost:5174/)",
+      "Bash(dir:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)"
+    ]
+  }
+}

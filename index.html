@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tutor - Opetellaan lukemaan</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- Toolbar -->
+    <div id="toolbar" class="toolbar hidden">
+      <button id="hamburger-btn" class="hamburger-btn" aria-label="Asetukset">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+          <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+        </svg>
+      </button>
+      <span id="toolbar-counter" class="toolbar-counter"></span>
+    </div>
+
+    <!-- Sidebar overlay -->
+    <div id="sidebar-overlay" class="sidebar-overlay hidden"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">Asetukset</span>
+        <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="Sulje">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <label class="toggle-label">
+          <span>Isot kirjaimet</span>
+          <input type="checkbox" id="uppercase-toggle" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="sidebar-section">
+        <label class="toggle-label">
+          <span>Tavutus</span>
+          <input type="checkbox" id="hyphenation-toggle" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div id="category-filters" class="sidebar-section">
+        <div class="sidebar-section-title">Sanaluokat</div>
+        <label class="toggle-label">
+          <span>Substantiivit</span>
+          <input type="checkbox" id="filter-noun" checked />
+          <span class="toggle-slider"></span>
+        </label>
+        <label class="toggle-label">
+          <span>Verbit</span>
+          <input type="checkbox" id="filter-verb" checked />
+          <span class="toggle-slider"></span>
+        </label>
+        <label class="toggle-label">
+          <span>Adjektiivit</span>
+          <input type="checkbox" id="filter-adjective" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Käännökset</div>
+        <label class="toggle-label">
+          <span><img src="/images/flag_uk.jpg" class="sidebar-flag" alt="EN"> Englanti</span>
+          <input type="checkbox" id="lang-en" checked />
+          <span class="toggle-slider"></span>
+        </label>
+        <label class="toggle-label">
+          <span><img src="/images/flag_es.jpg" class="sidebar-flag" alt="ES"> Espanja</span>
+          <input type="checkbox" id="lang-es" checked />
+          <span class="toggle-slider"></span>
+        </label>
+        <label class="toggle-label">
+          <span><img src="/images/flag_se.jpg" class="sidebar-flag" alt="SV"> Ruotsi</span>
+          <input type="checkbox" id="lang-sv" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div id="app">
+      <!-- Start screen -->
+      <div id="start-screen" class="screen">
+        <h1>Opetellaan lukemaan!</h1>
+        <p class="subtitle">Valitse tila</p>
+        <div class="mode-buttons">
+          <button class="btn-mode active" data-mode="words">Sanat</button>
+          <button class="btn-mode" data-mode="sentences">Lauseet</button>
+        </div>
+        <p class="subtitle">Valitse vaikeustaso</p>
+        <div class="difficulty-buttons">
+          <button class="btn btn-easy" data-difficulty="easy">Helppo</button>
+          <button class="btn btn-medium" data-difficulty="medium">Keskitaso</button>
+          <button class="btn btn-hard" data-difficulty="hard">Vaikea</button>
+        </div>
+      </div>
+
+      <!-- Word screen -->
+      <div id="word-screen" class="screen hidden">
+        <div class="word-display">
+          <div id="current-word"></div>
+          <button id="speak-btn" class="speak-btn" aria-label="Kuuntele">
+            <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor">
+              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+          </button>
+          <div id="translations" class="translations"></div>
+        </div>
+        <button id="next-btn" class="btn btn-next">Seuraava</button>
+        <button id="back-btn" class="btn btn-back">Takaisin</button>
+      </div>
+
+      <!-- Done screen -->
+      <div id="done-screen" class="screen hidden">
+        <h1>Hienoa!</h1>
+        <p id="done-subtitle" class="subtitle">Kaikki sanat käyty!</p>
+        <button id="restart-btn" class="btn btn-easy">Aloita alusta</button>
+      </div>
+
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
