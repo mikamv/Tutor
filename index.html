@@ -3,18 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1565c0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
     <title>Tutor - Opetellaan lukemaan</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <!-- Toolbar -->
-    <div id="toolbar" class="toolbar hidden">
+    <div id="toolbar" class="toolbar">
       <button id="hamburger-btn" class="hamburger-btn" aria-label="Asetukset">
         <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
           <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
         </svg>
       </button>
       <span id="toolbar-counter" class="toolbar-counter"></span>
+      <button id="help-btn" class="help-btn" aria-label="Ohje">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+        </svg>
+        <span>Ohje</span>
+      </button>
     </div>
 
     <!-- Sidebar overlay -->
@@ -110,7 +121,10 @@
           </button>
           <div id="translations" class="translations"></div>
         </div>
-        <button id="next-btn" class="btn btn-next">Seuraava</button>
+        <div class="nav-buttons">
+          <button id="prev-btn" class="btn btn-prev">Edellinen</button>
+          <button id="next-btn" class="btn btn-next">Seuraava</button>
+        </div>
         <button id="back-btn" class="btn btn-back">Takaisin</button>
       </div>
 
@@ -122,6 +136,51 @@
       </div>
 
     </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="modal-title">Ohje</span>
+          <button id="help-modal-close" class="modal-close-btn" aria-label="Sulje">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <section class="help-section">
+            <h3>Asetukset</h3>
+            <p>Paina vasemmassa yläkulmassa olevaa valikkopainiketta (☰) avataksesi asetukset. Sieltä voit säätää:</p>
+            <ul>
+              <li>Isot/pienet kirjaimet</li>
+              <li>Tavutuksen näyttäminen</li>
+              <li>Sanaluokat (sanatilassa)</li>
+              <li>Käännöskielet</li>
+            </ul>
+          </section>
+          <section class="help-section">
+            <h3>Lisää sovellus puhelimeen</h3>
+            <h4>iPhone / iPad:</h4>
+            <ol>
+              <li>Avaa tämä sivu Safarissa</li>
+              <li>Paina jakamispainiketta (neliö ja nuoli ylös)</li>
+              <li>Vieritä alas ja valitse "Lisää Koti-valikkoon"</li>
+              <li>Paina "Lisää"</li>
+            </ol>
+            <h4>Android:</h4>
+            <ol>
+              <li>Avaa tämä sivu Chromessa</li>
+              <li>Paina kolmea pistettä oikeassa yläkulmassa</li>
+              <li>Valitse "Lisää aloitusnäyttöön" tai "Asenna sovellus"</li>
+              <li>Vahvista painamalla "Lisää"</li>
+            </ol>
+          </section>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

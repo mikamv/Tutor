@@ -12,7 +12,7 @@ const LANGUAGES = [
 
 // --- Session state ---
 let shownItems = new Set();
-let itemCount = 0;
+let uniqueCount = 0;
 let currentItem = null;
 let difficulty = null;
 let hyphenationOn = false;
@@ -21,6 +21,8 @@ let mode = 'words'; // 'words' or 'sentences'
 let activeCategories = new Set(['noun', 'verb', 'adjective']);
 let availableItems = [];
 let activeLangs = new Set(['en', 'es', 'sv']);
+let history = []; // Array of items for navigation
+let historyIndex = -1; // Current position in history
 
 // --- DOM elements ---
 const startScreen = document.getElementById('start-screen');
@@ -31,6 +33,7 @@ const toolbar = document.getElementById('toolbar');
 const currentWordEl = document.getElementById('current-word');
 const translationsEl = document.getElementById('translations');
 const nextBtn = document.getElementById('next-btn');
+const prevBtn = document.getElementById('prev-btn');
 const backBtn = document.getElementById('back-btn');
 const restartBtn = document.getElementById('restart-btn');
 const hyphenationToggle = document.getElementById('hyphenation-toggle');
@@ -45,11 +48,113 @@ const hamburgerBtn = document.getElementById('hamburger-btn');
 const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
 const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+const helpBtn = document.getElementById('help-btn');
+const helpModal = document.getElementById('help-modal');
+const helpModalClose = document.getElementById('help-modal-close');
+const helpModalBackdrop = helpModal.querySelector('.modal-backdrop');
 const langToggles = {
   en: document.getElementById('lang-en'),
   es: document.getElementById('lang-es'),
   sv: document.getElementById('lang-sv'),
 };
+
+// --- LocalStorage keys ---
+const STORAGE_KEY = 'tutor-app-state';
+
+// --- Save state to localStorage ---
+function saveState() {
+  const state = {
+    mode,
+    difficulty,
+    hyphenationOn,
+    uppercaseOn,
+    activeCategories: Array.from(activeCategories),
+    activeLangs: Array.from(activeLangs),
+    shownItems: Array.from(shownItems),
+    uniqueCount,
+    history: history.map(item => mode === 'words' ? item.word : item.sentence),
+    historyIndex,
+  };
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    // localStorage might be unavailable
+  }
+}
+
+// --- Load state from localStorage ---
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return false;
+
+    const state = JSON.parse(saved);
+
+    // Restore settings
+    mode = state.mode || 'words';
+    difficulty = state.difficulty || null;
+    hyphenationOn = state.hyphenationOn || false;
+    uppercaseOn = state.uppercaseOn !== false; // default true
+    activeCategories = new Set(state.activeCategories || ['noun', 'verb', 'adjective']);
+    activeLangs = new Set(state.activeLangs || ['en', 'es', 'sv']);
+
+    // Apply UI settings
+    hyphenationToggle.checked = hyphenationOn;
+    uppercaseToggle.checked = uppercaseOn;
+    filterNoun.checked = activeCategories.has('noun');
+    filterVerb.checked = activeCategories.has('verb');
+    filterAdjective.checked = activeCategories.has('adjective');
+    langToggles.en.checked = activeLangs.has('en');
+    langToggles.es.checked = activeLangs.has('es');
+    langToggles.sv.checked = activeLangs.has('sv');
+
+    if (uppercaseOn) {
+      document.body.classList.remove('capitalize-mode');
+    } else {
+      document.body.classList.add('capitalize-mode');
+    }
+
+    // Update mode buttons
+    document.querySelectorAll('.btn-mode').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+
+    // If we have a session in progress, restore it
+    if (difficulty && state.historyIndex >= 0) {
+      // Get available items
+      if (mode === 'words') {
+        availableItems = getFilteredWords(difficulty, activeCategories);
+      } else {
+        availableItems = getSentencesByDifficulty(difficulty);
+      }
+
+      // Restore shown items and history
+      shownItems = new Set(state.shownItems || []);
+      uniqueCount = state.uniqueCount || 0;
+      historyIndex = state.historyIndex;
+
+      // Rebuild history from saved keys
+      const key = mode === 'words' ? 'word' : 'sentence';
+      history = [];
+      for (const itemKey of (state.history || [])) {
+        const item = availableItems.find(i => i[key] === itemKey);
+        if (item) {
+          history.push(item);
+        }
+      }
+
+      // Set current item
+      if (history.length > 0 && historyIndex >= 0 && historyIndex < history.length) {
+        currentItem = history[historyIndex];
+        return true; // Session restored
+      }
+    }
+
+    return false; // No active session to restore
+  } catch (e) {
+    return false;
+  }
+}
 
 // --- Case utility ---
 function applyCase(text) {
@@ -86,6 +191,15 @@ function closeSidebar() {
   );
 }
 
+// --- Help Modal ---
+function openHelpModal() {
+  helpModal.classList.remove('hidden');
+}
+
+function closeHelpModal() {
+  helpModal.classList.add('hidden');
+}
+
 // --- Screen management ---
 function showScreen(screen) {
   startScreen.classList.add('hidden');
@@ -93,13 +207,12 @@ function showScreen(screen) {
   doneScreen.classList.add('hidden');
   screen.classList.remove('hidden');
 
-  // Show toolbar only on word/done screens
-  if (screen === wordScreen || screen === doneScreen) {
-    toolbar.classList.remove('hidden');
-    document.body.classList.add('has-toolbar');
-  } else {
-    toolbar.classList.add('hidden');
-    document.body.classList.remove('has-toolbar');
+  // Toolbar is always visible, but counter content changes
+  document.body.classList.add('has-toolbar');
+
+  // Update counter based on screen
+  if (screen === startScreen) {
+    toolbarCounter.textContent = '';
   }
 
   // Show/hide category filters based on mode
@@ -118,7 +231,16 @@ function showScreen(screen) {
 function pickRandomItem() {
   const key = mode === 'words' ? 'word' : 'sentence';
   const remaining = availableItems.filter((item) => !shownItems.has(item[key]));
-  if (remaining.length === 0) return null;
+
+  // If all items have been shown, reset and pick again (loop)
+  if (remaining.length === 0) {
+    shownItems.clear();
+    const allItems = [...availableItems];
+    if (allItems.length === 0) return null;
+    const idx = Math.floor(Math.random() * allItems.length);
+    return allItems[idx];
+  }
+
   const idx = Math.floor(Math.random() * remaining.length);
   return remaining[idx];
 }
@@ -182,6 +304,12 @@ function renderTranslations() {
   }
 }
 
+// --- Update counter display ---
+function updateCounter() {
+  const label = mode === 'words' ? 'Sanoja näytetty' : 'Lauseita näytetty';
+  toolbarCounter.textContent = `${label}: ${uniqueCount}`;
+}
+
 // --- Display the current item ---
 function displayItem() {
   if (!currentItem) return;
@@ -196,7 +324,6 @@ function displayItem() {
     currentWordEl.textContent = applyCase(rawText);
     currentWordEl.classList.remove('sentence-text');
     currentWordEl.classList.toggle('word-nowrap', !hyphenationOn);
-    toolbarCounter.textContent = `Sanoja näytetty: ${itemCount}`;
   } else {
     const rawText = hyphenationOn
       ? hyphenateSentence(currentItem.sentence)
@@ -204,11 +331,12 @@ function displayItem() {
     currentWordEl.textContent = applyCase(rawText);
     currentWordEl.classList.add('sentence-text');
     currentWordEl.classList.remove('word-nowrap');
-    toolbarCounter.textContent = `Lauseita näytetty: ${itemCount}`;
   }
 
+  updateCounter();
   renderTranslations();
   fitWordToLine();
+  saveState();
 }
 
 // --- Shrink font so single words (no hyphenation) fit on one line ---
@@ -224,18 +352,62 @@ function fitWordToLine() {
 
 // --- Advance to next item ---
 function nextItem() {
-  const item = pickRandomItem();
-  if (!item) {
-    doneSubtitle.textContent =
-      mode === 'words' ? 'Kaikki sanat käyty!' : 'Kaikki lauseet käyty!';
-    showScreen(doneScreen);
+  // If we're not at the end of history, just move forward
+  if (historyIndex < history.length - 1) {
+    historyIndex++;
+    currentItem = history[historyIndex];
+    displayItem();
     return;
   }
+
+  // Pick a new random item
+  const item = pickRandomItem();
+  if (!item) {
+    // Should not happen with looping, but just in case
+    return;
+  }
+
   currentItem = item;
   const key = mode === 'words' ? 'word' : 'sentence';
+
+  // Track as unique only if not previously shown
+  if (!shownItems.has(item[key])) {
+    uniqueCount++;
+  }
   shownItems.add(item[key]);
-  itemCount++;
+
+  // Add to history
+  history.push(item);
+  historyIndex = history.length - 1;
+
   displayItem();
+}
+
+// --- Go to previous item ---
+function prevItem() {
+  if (historyIndex > 0) {
+    historyIndex--;
+    currentItem = history[historyIndex];
+    displayItem();
+  } else if (history.length > 0) {
+    // Loop to the end - pick a new random item and prepend to history
+    const item = pickRandomItem();
+    if (!item) return;
+
+    currentItem = item;
+    const key = mode === 'words' ? 'word' : 'sentence';
+
+    if (!shownItems.has(item[key])) {
+      uniqueCount++;
+    }
+    shownItems.add(item[key]);
+
+    // Prepend to history
+    history.unshift(item);
+    // historyIndex stays at 0
+
+    displayItem();
+  }
 }
 
 // --- Update category filter and re-filter pool ---
@@ -263,14 +435,17 @@ function updateCategoryFilter() {
   if (currentItem && !activeCategories.has(currentItem.category)) {
     nextItem();
   }
+  saveState();
 }
 
 // --- Start a session ---
 function startSession(diff) {
   difficulty = diff;
   shownItems = new Set();
-  itemCount = 0;
+  uniqueCount = 0;
   currentItem = null;
+  history = [];
+  historyIndex = -1;
 
   if (mode === 'words') {
     availableItems = getFilteredWords(difficulty, activeCategories);
@@ -284,6 +459,14 @@ function startSession(diff) {
 
 // --- Reset to start ---
 function resetToStart() {
+  // Clear session but keep settings
+  difficulty = null;
+  shownItems = new Set();
+  uniqueCount = 0;
+  currentItem = null;
+  history = [];
+  historyIndex = -1;
+  saveState();
   showScreen(startScreen);
 }
 
@@ -302,6 +485,7 @@ document.querySelectorAll('.btn-mode').forEach((btn) => {
     document.querySelectorAll('.btn-mode').forEach((b) => b.classList.remove('active'));
     btn.classList.add('active');
     mode = btn.dataset.mode;
+    saveState();
   });
 });
 
@@ -315,6 +499,9 @@ document.querySelectorAll('.difficulty-buttons .btn').forEach((btn) => {
 // Next button
 nextBtn.addEventListener('click', nextItem);
 
+// Previous button
+prevBtn.addEventListener('click', prevItem);
+
 // Back button
 backBtn.addEventListener('click', resetToStart);
 
@@ -325,6 +512,7 @@ restartBtn.addEventListener('click', resetToStart);
 hyphenationToggle.addEventListener('change', () => {
   hyphenationOn = hyphenationToggle.checked;
   displayItem();
+  saveState();
 });
 
 // Uppercase toggle
@@ -336,6 +524,7 @@ uppercaseToggle.addEventListener('change', () => {
     document.body.classList.add('capitalize-mode');
   }
   displayItem();
+  saveState();
 });
 
 // Speak button
@@ -355,6 +544,7 @@ Object.entries(langToggles).forEach(([langId, toggle]) => {
       activeLangs.delete(langId);
     }
     renderTranslations();
+    saveState();
   });
 });
 
@@ -363,5 +553,16 @@ hamburgerBtn.addEventListener('click', openSidebar);
 sidebarCloseBtn.addEventListener('click', closeSidebar);
 sidebarOverlay.addEventListener('click', closeSidebar);
 
+// Help modal
+helpBtn.addEventListener('click', openHelpModal);
+helpModalClose.addEventListener('click', closeHelpModal);
+helpModalBackdrop.addEventListener('click', closeHelpModal);
+
 // --- Initialize ---
-showScreen(startScreen);
+const sessionRestored = loadState();
+if (sessionRestored) {
+  showScreen(wordScreen);
+  displayItem();
+} else {
+  showScreen(startScreen);
+}
