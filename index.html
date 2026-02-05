@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/icon.svg" />
-    <title>Tutor - Opetellaan lukemaan</title>
+    <title>Tutor - Opitaan yhdessä!</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
@@ -20,6 +20,7 @@
         </svg>
       </button>
       <span id="toolbar-counter" class="toolbar-counter"></span>
+      <span class="toolbar-title">Tutor <span id="version-number"></span></span>
       <button id="help-btn" class="help-btn" aria-label="Ohje">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
@@ -41,61 +42,94 @@
           </svg>
         </button>
       </div>
-      <div class="sidebar-section">
-        <label class="toggle-label">
-          <span>Isot kirjaimet</span>
-          <input type="checkbox" id="uppercase-toggle" checked />
-          <span class="toggle-slider"></span>
-        </label>
+
+      <!-- Reading module settings -->
+      <div id="reading-settings" class="module-settings">
+        <div class="sidebar-section">
+          <label class="toggle-label">
+            <span>Isot kirjaimet</span>
+            <input type="checkbox" id="uppercase-toggle" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="sidebar-section">
+          <label class="toggle-label">
+            <span>Tavutus</span>
+            <input type="checkbox" id="hyphenation-toggle" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div id="category-filters" class="sidebar-section">
+          <div class="sidebar-section-title">Sanaluokat</div>
+          <label class="toggle-label">
+            <span>Substantiivit</span>
+            <input type="checkbox" id="filter-noun" checked />
+            <span class="toggle-slider"></span>
+          </label>
+          <label class="toggle-label">
+            <span>Verbit</span>
+            <input type="checkbox" id="filter-verb" checked />
+            <span class="toggle-slider"></span>
+          </label>
+          <label class="toggle-label">
+            <span>Adjektiivit</span>
+            <input type="checkbox" id="filter-adjective" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Käännökset</div>
+          <label class="toggle-label">
+            <span><img src="/images/flag_uk.jpg" class="sidebar-flag" alt="EN"> Englanti</span>
+            <input type="checkbox" id="lang-en" checked />
+            <span class="toggle-slider"></span>
+          </label>
+          <label class="toggle-label">
+            <span><img src="/images/flag_es.jpg" class="sidebar-flag" alt="ES"> Espanja</span>
+            <input type="checkbox" id="lang-es" checked />
+            <span class="toggle-slider"></span>
+          </label>
+          <label class="toggle-label">
+            <span><img src="/images/flag_se.jpg" class="sidebar-flag" alt="SV"> Ruotsi</span>
+            <input type="checkbox" id="lang-sv" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
       </div>
-      <div class="sidebar-section">
-        <label class="toggle-label">
-          <span>Tavutus</span>
-          <input type="checkbox" id="hyphenation-toggle" />
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <div id="category-filters" class="sidebar-section">
-        <div class="sidebar-section-title">Sanaluokat</div>
-        <label class="toggle-label">
-          <span>Substantiivit</span>
-          <input type="checkbox" id="filter-noun" checked />
-          <span class="toggle-slider"></span>
-        </label>
-        <label class="toggle-label">
-          <span>Verbit</span>
-          <input type="checkbox" id="filter-verb" checked />
-          <span class="toggle-slider"></span>
-        </label>
-        <label class="toggle-label">
-          <span>Adjektiivit</span>
-          <input type="checkbox" id="filter-adjective" checked />
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-section-title">Käännökset</div>
-        <label class="toggle-label">
-          <span><img src="/images/flag_uk.jpg" class="sidebar-flag" alt="EN"> Englanti</span>
-          <input type="checkbox" id="lang-en" checked />
-          <span class="toggle-slider"></span>
-        </label>
-        <label class="toggle-label">
-          <span><img src="/images/flag_es.jpg" class="sidebar-flag" alt="ES"> Espanja</span>
-          <input type="checkbox" id="lang-es" checked />
-          <span class="toggle-slider"></span>
-        </label>
-        <label class="toggle-label">
-          <span><img src="/images/flag_se.jpg" class="sidebar-flag" alt="SV"> Ruotsi</span>
-          <input type="checkbox" id="lang-sv" checked />
-          <span class="toggle-slider"></span>
-        </label>
+
+      <!-- Math module settings -->
+      <div id="math-settings" class="module-settings hidden">
+        <div class="sidebar-section">
+          <label class="toggle-label">
+            <span>Näytä lukusuora</span>
+            <input type="checkbox" id="math-show-numberline" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
       </div>
     </div>
 
     <div id="app">
-      <!-- Start screen -->
-      <div id="start-screen" class="screen">
+      <!-- Module selection screen -->
+      <div id="module-screen" class="screen">
+        <h1>Opitaan yhdessä!</h1>
+        <p class="subtitle">Valitse aihe</p>
+        <div class="module-buttons">
+          <button class="btn-module" data-module="reading">
+            <span class="module-icon">📖</span>
+            <span class="module-label">Lukeminen</span>
+            <span class="module-subtitle">Opetellaan lukemaan!</span>
+          </button>
+          <button class="btn-module" data-module="math">
+            <span class="module-icon">🔢</span>
+            <span class="module-label">Matematiikka</span>
+            <span class="module-subtitle">Opetellaan laskemaan!</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Reading: Start screen -->
+      <div id="reading-start-screen" class="screen hidden">
         <h1>Opetellaan lukemaan!</h1>
         <p class="subtitle">Valitse tila</p>
         <div class="mode-buttons">
@@ -108,10 +142,11 @@
           <button class="btn btn-medium" data-difficulty="medium">Keskitaso</button>
           <button class="btn btn-hard" data-difficulty="hard">Vaikea</button>
         </div>
+        <button id="reading-back-to-modules" class="btn btn-back">Takaisin</button>
       </div>
 
-      <!-- Word screen -->
-      <div id="word-screen" class="screen hidden">
+      <!-- Reading: Word/Sentence screen -->
+      <div id="reading-word-screen" class="screen hidden">
         <div class="word-display">
           <div id="current-word"></div>
           <button id="speak-btn" class="speak-btn" aria-label="Kuuntele">
@@ -125,14 +160,91 @@
           <button id="prev-btn" class="btn btn-prev">Edellinen</button>
           <button id="next-btn" class="btn btn-next">Seuraava</button>
         </div>
-        <button id="back-btn" class="btn btn-back">Takaisin</button>
+        <button id="reading-back-btn" class="btn btn-back">Takaisin</button>
       </div>
 
-      <!-- Done screen -->
-      <div id="done-screen" class="screen hidden">
+      <!-- Reading: Done screen (kept but unused due to looping) -->
+      <div id="reading-done-screen" class="screen hidden">
         <h1>Hienoa!</h1>
         <p id="done-subtitle" class="subtitle">Kaikki sanat käyty!</p>
         <button id="restart-btn" class="btn btn-easy">Aloita alusta</button>
+      </div>
+
+      <!-- Math: Main screen -->
+      <div id="math-screen" class="screen hidden">
+        <!-- Math controls bar -->
+        <div class="math-controls">
+          <div class="math-control-row">
+            <span class="math-control-label">Laskutoimitus:</span>
+            <div class="math-operation-buttons">
+              <button class="btn-operation active" data-operation="addition">+</button>
+              <button class="btn-operation" data-operation="subtraction">−</button>
+            </div>
+          </div>
+          <div class="math-control-row">
+            <span class="math-control-label">Vaikeustaso:</span>
+            <div class="math-difficulty-buttons">
+              <button class="btn-difficulty active" data-level="1">1</button>
+              <button class="btn-difficulty" data-level="2">2</button>
+              <button class="btn-difficulty" data-level="3">3</button>
+              <button class="btn-difficulty disabled" data-level="4" disabled>4</button>
+              <button class="btn-difficulty disabled" data-level="5" disabled>5</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question display -->
+        <div class="math-question">
+          <span id="math-num1" class="math-number math-number-first"></span>
+          <span id="math-operator" class="math-operator"></span>
+          <span id="math-num2" class="math-number math-number-second"></span>
+          <span class="math-equals">=</span>
+          <span id="math-answer-display" class="math-answer-display">?</span>
+        </div>
+
+        <!-- Number line visualization -->
+        <div class="number-line-container">
+          <svg id="number-line" class="number-line" viewBox="0 0 600 80" preserveAspectRatio="xMidYMid meet">
+            <!-- Number line will be rendered by JS -->
+          </svg>
+        </div>
+        <button id="math-help-btn" class="math-help-btn" aria-label="Näytä apu">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+          </svg>
+          <span>Apu</span>
+        </button>
+
+        <!-- Answer input -->
+        <div class="math-input-section">
+          <div class="math-answer-row">
+            <span id="math-input-display" class="math-input-display"></span>
+            <button id="math-clear-btn" class="math-clear-btn">C</button>
+          </div>
+          <div class="math-numpad">
+            <button class="btn-numpad" data-value="1">1</button>
+            <button class="btn-numpad" data-value="2">2</button>
+            <button class="btn-numpad" data-value="3">3</button>
+            <button class="btn-numpad" data-value="4">4</button>
+            <button class="btn-numpad" data-value="5">5</button>
+            <button class="btn-numpad" data-value="6">6</button>
+            <button class="btn-numpad" data-value="7">7</button>
+            <button class="btn-numpad" data-value="8">8</button>
+            <button class="btn-numpad" data-value="9">9</button>
+            <button class="btn-numpad btn-numpad-negative" data-value="-">−</button>
+            <button class="btn-numpad" data-value="0">0</button>
+            <button id="math-submit-btn" class="btn-numpad btn-numpad-submit">OK</button>
+          </div>
+        </div>
+
+        <!-- Feedback area -->
+        <div id="math-feedback" class="math-feedback hidden"></div>
+
+        <!-- Navigation -->
+        <div class="math-nav">
+          <button id="math-next-btn" class="btn btn-next hidden">Seuraava</button>
+        </div>
+        <button id="math-back-to-modules" class="btn btn-back">Takaisin</button>
       </div>
 
     </div>
@@ -151,13 +263,28 @@
         </div>
         <div class="modal-body">
           <section class="help-section">
+            <h3>Aiheet</h3>
+            <p>Valitse aloitussivulta haluamasi aihe:</p>
+            <ul>
+              <li><strong>Lukeminen</strong> - Opettele lukemaan suomenkielisiä sanoja ja lauseita</li>
+              <li><strong>Matematiikka</strong> - Harjoittele yhteen- ja vähennyslaskuja lukusuoran avulla</li>
+            </ul>
+          </section>
+          <section class="help-section">
             <h3>Asetukset</h3>
-            <p>Paina vasemmassa yläkulmassa olevaa valikkopainiketta (☰) avataksesi asetukset. Sieltä voit säätää:</p>
+            <p>Paina vasemmassa yläkulmassa olevaa valikkopainiketta (☰) avataksesi asetukset. Asetukset ovat aihekohtaisia.</p>
+            <p><strong>Lukeminen-asetukset:</strong></p>
             <ul>
               <li>Isot/pienet kirjaimet</li>
               <li>Tavutuksen näyttäminen</li>
               <li>Sanaluokat (sanatilassa)</li>
               <li>Käännöskielet</li>
+            </ul>
+            <p><strong>Matematiikka:</strong></p>
+            <ul>
+              <li>Valitse laskutoimitus (+ tai −) näytön yläreunasta</li>
+              <li>Valitse vaikeustaso 1-5 (isommat numerot = vaikeampi)</li>
+              <li>Paina "Apu" nähdäksesi miten lasku toimii lukusuoralla</li>
             </ul>
           </section>
           <section class="help-section">
@@ -176,6 +303,11 @@
               <li>Valitse "Lisää aloitusnäyttöön" tai "Asenna sovellus"</li>
               <li>Vahvista painamalla "Lisää"</li>
             </ol>
+          </section>
+          <section class="help-section help-footer">
+            <p class="help-made-with">Tehty Claude Code avustuksella.</p>
+            <p class="help-copyright">Tutor <span id="help-version-number"></span></p>
+            <p class="help-copyright">&copy; 2025 Mika Vehkala</p>
           </section>
         </div>
       </div>

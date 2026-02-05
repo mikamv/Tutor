@@ -126,6 +126,56 @@ h1 {
   min-height: 44px;
 }
 
+/* === Module buttons === */
+.module-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.btn-module {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1.5rem 2rem;
+  border: 3px solid #42a5f5;
+  border-radius: 20px;
+  background: white;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+}
+
+.btn-module:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(66, 165, 245, 0.25);
+  background: #e3f2fd;
+}
+
+.btn-module:active {
+  transform: scale(0.98);
+}
+
+.module-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.module-label {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1565c0;
+  text-transform: uppercase;
+}
+
+.module-subtitle {
+  font-size: 1rem;
+  color: #666;
+  font-style: italic;
+}
+
 /* === Mode buttons === */
 .mode-buttons {
   display: flex;
@@ -220,6 +270,21 @@ h1 {
   font-weight: 500;
   text-transform: uppercase;
   flex: 1;
+}
+
+.toolbar-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1565c0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#version-number {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #888;
 }
 
 .help-btn {
@@ -334,6 +399,24 @@ h1 {
   letter-spacing: 0.05em;
 }
 
+.sidebar-placeholder {
+  font-size: 0.95rem;
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* Module-specific sidebar settings */
+.module-settings {
+  display: flex;
+  flex-direction: column;
+}
+
+.module-settings.hidden {
+  display: none;
+}
+
 /* === Toggles === */
 .toggle-label {
   display: flex;
@@ -392,6 +475,7 @@ h1 {
 .capitalize-mode .sidebar-section-title,
 .capitalize-mode .btn,
 .capitalize-mode .btn-mode,
+.capitalize-mode .module-label,
 .capitalize-mode .translation-text {
   text-transform: none;
 }
@@ -522,9 +606,425 @@ h1 {
 }
 
 /* === Done screen === */
-#done-screen h1 {
+#reading-done-screen h1 {
   font-size: 3rem;
   color: #66bb6a;
+}
+
+/* === Coming soon text === */
+.coming-soon-text {
+  font-size: 1.1rem;
+  color: #888;
+  text-align: center;
+  font-style: italic;
+}
+
+/* === Math Module === */
+.math-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 500px;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.math-control-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.math-control-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #555;
+  min-width: 100px;
+  text-transform: uppercase;
+}
+
+.math-operation-buttons,
+.math-difficulty-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-operation {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #42a5f5;
+  border-radius: 12px;
+  background: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #42a5f5;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-operation:hover {
+  background: #e3f2fd;
+}
+
+.btn-operation.active {
+  background: #42a5f5;
+  color: white;
+}
+
+.btn-difficulty {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #66bb6a;
+  border-radius: 10px;
+  background: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #66bb6a;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-difficulty:hover:not(.disabled) {
+  background: #e8f5e9;
+}
+
+.btn-difficulty.active {
+  background: #66bb6a;
+  color: white;
+}
+
+.btn-difficulty.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: #ccc;
+  color: #ccc;
+}
+
+/* Math question display */
+.math-question {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 3rem;
+  font-weight: 900;
+  color: #1565c0;
+  padding: 1rem;
+  flex-wrap: wrap;
+}
+
+.math-number {
+  min-width: 60px;
+  text-align: center;
+}
+
+.math-operator {
+  color: #ef5350;
+  min-width: 40px;
+  text-align: center;
+}
+
+.math-equals {
+  color: #555;
+  min-width: 40px;
+  text-align: center;
+}
+
+.math-number-first {
+  color: #1565c0;
+}
+
+.math-number-second {
+  color: #ef5350;
+}
+
+.math-operator {
+  color: #333;
+}
+
+.math-equals {
+  color: #333;
+}
+
+.math-answer-display {
+  min-width: 60px;
+  text-align: center;
+  color: #66bb6a;
+  border-bottom: 4px solid #66bb6a;
+  padding: 0 0.25rem;
+}
+
+.math-answer-display.typing {
+  color: #666;
+  border-color: #999;
+}
+
+.math-answer-display.correct {
+  color: #66bb6a;
+  border-color: #66bb6a;
+}
+
+.math-answer-display.incorrect {
+  color: #ef5350;
+  border-color: #ef5350;
+}
+
+/* Number line */
+.number-line-container {
+  width: 100%;
+  max-width: 600px;
+}
+
+.number-line {
+  width: 100%;
+  height: 80px;
+}
+
+.number-line-tick {
+  stroke: #333;
+  stroke-width: 2;
+}
+
+.number-line-tick-small {
+  stroke: #999;
+  stroke-width: 1;
+}
+
+.number-line-label {
+  font-size: 14px;
+  text-anchor: middle;
+}
+
+.number-line-main {
+  stroke: #333;
+  stroke-width: 3;
+}
+
+.number-line-highlight-start {
+  fill: #1565c0;
+}
+
+.number-line-highlight-arc {
+  fill: none;
+  stroke: #ef5350;
+  stroke-width: 3;
+}
+
+.number-line-highlight-arrow {
+  fill: #ef5350;
+}
+
+.number-line-highlight-end {
+  fill: #66bb6a;
+}
+
+.math-help-btn {
+  background: none;
+  border: 2px solid #ffa726;
+  border-radius: 8px;
+  color: #ffa726;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  margin: 0 auto;
+}
+
+.math-help-btn:hover {
+  background: #ffa726;
+  color: white;
+}
+
+.math-help-btn.active {
+  background: #ffa726;
+  color: white;
+}
+
+/* Math input */
+.math-input-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+.math-answer-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.math-input-display {
+  flex: 1;
+  height: 56px;
+  background: white;
+  border: 3px solid #42a5f5;
+  border-radius: 12px;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  color: #1565c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.math-clear-btn {
+  width: 56px;
+  height: 56px;
+  border: none;
+  border-radius: 12px;
+  background: #bdbdbd;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.math-clear-btn:hover {
+  background: #9e9e9e;
+}
+
+.math-numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.btn-numpad {
+  height: 56px;
+  border: none;
+  border-radius: 12px;
+  background: #e3f2fd;
+  color: #1565c0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-numpad:hover {
+  background: #bbdefb;
+  transform: scale(1.05);
+}
+
+.btn-numpad:active {
+  transform: scale(0.95);
+}
+
+.btn-numpad-negative {
+  background: #fff3e0;
+  color: #ef5350;
+}
+
+.btn-numpad-negative:hover {
+  background: #ffe0b2;
+}
+
+.btn-numpad-submit {
+  background: #66bb6a;
+  color: white;
+}
+
+.btn-numpad-submit:hover {
+  background: #4caf50;
+}
+
+/* Math feedback */
+.math-feedback {
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.math-feedback.correct {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.math-feedback.incorrect {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.math-nav {
+  min-height: 60px;
+}
+
+/* Responsive math styles */
+@media (max-width: 480px) {
+  .math-question {
+    font-size: 2.2rem;
+  }
+
+  .math-number {
+    min-width: 45px;
+  }
+
+  .math-operator,
+  .math-equals {
+    min-width: 30px;
+  }
+
+  .math-control-label {
+    font-size: 0.85rem;
+    min-width: 85px;
+  }
+
+  .btn-operation {
+    width: 42px;
+    height: 42px;
+    font-size: 1.3rem;
+  }
+
+  .btn-difficulty {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .math-input-display {
+    height: 48px;
+    font-size: 1.6rem;
+  }
+
+  .math-clear-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 1.3rem;
+  }
+
+  .btn-numpad {
+    height: 48px;
+    font-size: 1.3rem;
+  }
+
+  .math-help-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .number-line-label {
+    font-size: 11px;
+  }
 }
 
 /* === Responsive === */
@@ -565,6 +1065,22 @@ h1 {
   .btn-mode {
     font-size: 1.1rem;
     padding: 0.6rem 1rem;
+  }
+
+  .btn-module {
+    padding: 1.2rem 1.5rem;
+  }
+
+  .module-icon {
+    font-size: 2.5rem;
+  }
+
+  .module-label {
+    font-size: 1.3rem;
+  }
+
+  .module-subtitle {
+    font-size: 0.9rem;
   }
 }
 
@@ -690,6 +1206,26 @@ h1 {
 }
 
 .help-section li {
+  margin-bottom: 4px;
+}
+
+.help-footer {
+  text-align: center;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  margin-top: 12px;
+}
+
+.help-made-with {
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.help-copyright {
+  font-size: 0.8rem;
+  color: #999;
   margin-bottom: 4px;
 }
 
